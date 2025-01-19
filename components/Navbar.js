@@ -1,42 +1,63 @@
 "use client"
-
-import React from 'react'
+import React, { useState } from 'react'
 import { useSession, signIn, signOut } from "next-auth/react"
 import Link from 'next/link'
 
 const Navbar = () => {
-
-  // export default function Component() {
   const { data: session } = useSession()
-  if (session) {
-    return <>
-        Signed in as {session.user.email} <br />
-        <button onClick={() => signOut()}>Sign out</button>
-      </>
-  
-  }
+  const [showdropdown, setShowdropdown] = useState(false)
+
 
   return (
-    <nav className='text-white flex justify-between items-center bg-blue-950 px-4 min-h-[8vh]'>
-      <div className='logo font-bold text-xl flex justify-center items-center'><img className="" width="66" src='maker-happy-cup.gif' /><  span className='px-6'>GetMeAChai!</span></div>
-      {/* <ul className='flex gap-9 justify-center items-start'>
+    <nav className='bg-gray-900 shadow-xl shadow-white text-white flex justify-between items-center px-4 md:h-16'>
+
+      <Link className="logo font-bold text-lg flex justify-center items-center" href={"/"}>
+        <img className='invertImg m-4' src="maker-happy-cup.gif" width={44} alt="" />
+        <span className='text-xl md:text-base my-3 md:my-0'>Get Me a Chai!</span>
+      </Link>
+
+      {/* <ul className='flex justify-between gap-4'>
         <li>Home</li>
         <li>About</li>
         <li>Projects</li>
-        <li>SignUp</li>
+        <li>Sign Up</li>
         <li>Login</li>
       </ul> */}
-      <div>
-        <Link href={'/login'}>
-          <button className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
-           onClick={()=>{signIn("github")}}>
-            <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0" >
-              login
-            </span>
-          </button></Link>
+
+      <div className='relative flex justify-center items-center  md:block gap-4'>
+        {session && <>
+          <button onClick={() => setShowdropdown(!showdropdown)} onBlur={() => {
+            setTimeout(() => {
+              setShowdropdown(false)
+            }, 100);
+          }} id="dropdownDefaultButton" data-dropdown-toggle="dropdown" className="text-white mx-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">Account<svg className="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
+            </svg>
+          </button>
+
+          <div id="dropdown" className={`z-10 ${showdropdown ? "" : "hidden"} absolute left-[15px] top-12 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700`}>
+            <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+              <li>
+                <Link href="/dashboard" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</Link>
+              </li>
+              <li>
+                <Link href={`/${session.user.name}`} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Your Page</Link>
+              </li>
+              <li>
+                <Link onClick={() => signOut()} href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign out</Link>
+              </li>
+            </ul>
+          </div></>
+        }
+
+        {session && <button className='text-white w-fit bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 ' onClick={() => { signOut() }}>Logout</button>}
+        {!session && <Link href={"/login"}>
+          <button className='text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 '>Login</button></Link>}
+          <Link href={"/dashboard"}><button onClick={() => { }} className='text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 '>Dashboard</button></Link>
+      
       </div>
     </nav>
-  );
+  )
 }
 
 export default Navbar
